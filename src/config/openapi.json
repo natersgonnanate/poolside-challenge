@@ -82,7 +82,7 @@
             "description": "A Bad Request when the request payload is not well formed"
           }
         }
-      },      
+      },
       "put": {
         "summary": "Replaces an availability record",
         "tags": [
@@ -161,6 +161,182 @@
           }
         }
       }
+    },
+    "/appointment/{appointmentId}": {
+      "get": {
+        "summary": "Returns an appointment record by the appointmentId",
+        "tags": [
+          "Appointment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appointmentId",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": true,
+            "description": "The Appointment ID to retreive"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request availability object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/availabilityWithAppointment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request response when an availabilityId is not provided"
+          },
+          "404": {
+            "description": "A Not Found response when the availability was not found by the availabilityId"
+          }
+        }
+      }
+    },
+    "/appointment": {
+      "post": {
+        "summary": "Creates an appointment record",
+        "tags": [
+          "Appointment"
+        ],
+        "requestBody": {
+          "description": "The Appointment request payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/appointmentWithAvailability"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created appointment object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/appointmentWithAvailability"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request when the request payload is not well formed"
+          }
+        }
+      },
+      "put": {
+        "summary": "Replaces an appointment record",
+        "tags": [
+          "Appointment"
+        ],
+        "requestBody": {
+          "description": "The Appointment request payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/appointmentWithAvailability"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated appointment record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/appointmentWithAvailability"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request when the request payload is not well formed"
+          }
+        }
+      }
+    },
+    "/availability/byemail/{email}": {
+      "get": {
+        "summary": "Any appointments matching the email.",
+        "tags": [
+          "Appointment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of availability objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/appointmentWithAvailability"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request response when an email isn't provided."
+          }
+        }
+      }
+    },
+    "/availability/byphone/{phone}": {
+      "get": {
+        "summary": "Any appointments matching the phone.",
+        "tags": [
+          "Appointment"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "phone",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of availability objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/appointmentWithAvailability"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request response when an email isn't provided."
+          }
+        }
+      }
     }
   },
   "components": {
@@ -204,9 +380,6 @@
           },
           "phone": {
             "type": "string"
-          },
-          "availability": {
-            "$ref": "#/components/schemas/availability"
           }
         }
       },
@@ -220,6 +393,21 @@
             "properties": {
               "appointment": {
                 "$ref": "#/components/schemas/appointment"
+              }
+            }
+          }
+        ]
+      },
+      "appointmentWithAvailability": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/appointment"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "availability": {
+                "$ref": "#/components/schemas/availability"
               }
             }
           }
