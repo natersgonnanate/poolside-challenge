@@ -12,6 +12,110 @@
     }
   ],
   "paths": {
+    "/availability/{availabilityId}": {
+      "get": {
+        "summary": "Returns an availability record by",
+        "tags": [
+          "Availability"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "availabilityId",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "required": true,
+            "description": "The Availability ID to retreive"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request availability object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/availabilityWithAppointment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request response when an availabilityId is not provided"
+          },
+          "404": {
+            "description": "A Not Found response when the availability was not found by the availabilityId"
+          }
+        }
+      }
+    },
+    "/availability": {
+      "post": {
+        "summary": "Creates an availability record",
+        "tags": [
+          "Availability"
+        ],
+        "requestBody": {
+          "description": "The Availability request payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/availability"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created availability object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/availability"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request when the request payload is not well formed"
+          }
+        }
+      },      
+      "put": {
+        "summary": "Replaces an availability record",
+        "tags": [
+          "Availability"
+        ],
+        "requestBody": {
+          "description": "The Availability request payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/availability"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created availability object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/availability"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request when the request payload is not well formed"
+          }
+        }
+      }
+    },
     "/availability/byrange": {
       "get": {
         "summary": "Returns configured availability for a given month.",
@@ -46,19 +150,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "availabilityDate": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "The date and time of the start of the availability slot"
-                      },
-                      "duration": {
-                        "type": "number",
-                        "format": "int32",
-                        "description": "Duration of the availability slot in minutes."
-                      }
-                    }
+                    "$ref": "#/components/schemas/availabilityWithAppointment"
                   }
                 }
               }
@@ -68,6 +160,70 @@
             "description": "A Bad Request response when either the startdate or enddate parameters are missing, or if the end date is not after the start date.."
           }
         }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "availability": {
+        "type": "object",
+        "required": [
+          "availabilityDate",
+          "duration"
+        ],
+        "properties": {
+          "availabilityId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "availabilityDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time of the start of the availability slot"
+          },
+          "duration": {
+            "type": "number",
+            "format": "int32",
+            "description": "Duration of the availability slot in minutes."
+          }
+        }
+      },
+      "appointment": {
+        "type": "object",
+        "required": [
+          "email",
+          "phone"
+        ],
+        "properties": {
+          "appointmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "availability": {
+            "$ref": "#/components/schemas/availability"
+          }
+        }
+      },
+      "availabilityWithAppointment": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/availability"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "appointment": {
+                "$ref": "#/components/schemas/appointment"
+              }
+            }
+          }
+        ]
       }
     }
   }

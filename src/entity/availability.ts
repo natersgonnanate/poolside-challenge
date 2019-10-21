@@ -1,10 +1,38 @@
-import { Entity, PrimaryColumn, Column } from "typeorm";
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    OneToOne,
+    CreateDateColumn
+} from "typeorm";
+import { Appointment } from "./appointment";
 
 @Entity()
 export class Availability {
-    @PrimaryColumn()
-    availabilityDate: Date = new Date();
+    @PrimaryGeneratedColumn({
+        type: "int"
+    })
+    availabilityId: number;
 
-    @Column()
-    duration: number = 60;
+    @Column({
+        nullable: false,
+        unique: false,
+        type: "datetime"
+    })
+    availabilityDate: Date;
+
+    @Column({
+        type: "int"
+    })
+    duration: number;
+
+    @Column({
+        nullable: true
+    })
+    test: "string"
+
+    @OneToOne(type => Appointment, appointment => appointment.availability, {
+        cascade: true
+    })
+    appointment: Appointment
 };
