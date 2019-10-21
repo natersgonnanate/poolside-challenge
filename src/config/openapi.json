@@ -266,7 +266,7 @@
         }
       }
     },
-    "/availability/byemail/{email}": {
+    "/appointment/byemail/{email}": {
       "get": {
         "summary": "Any appointments matching the email.",
         "tags": [
@@ -302,7 +302,7 @@
         }
       }
     },
-    "/availability/byphone/{phone}": {
+    "/appointment/byphone/{phone}": {
       "get": {
         "summary": "Any appointments matching the phone.",
         "tags": [

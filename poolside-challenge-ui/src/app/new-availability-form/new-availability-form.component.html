@@ -1,0 +1,15 @@
+<form #newAvailability="ngForm" (ngSubmit)="save(newAvailability.value)">
+  <div class="form-group">
+    <label for="availabilityDate">Date:</label>
+    <input required type="datetime" class="form-control" id="availabilityDate" aria-describedby="availabilityDateHelp"
+      placeholder="Select a date and time" [(ngModel)]="model.availabilityDate" name="availabilityDate">
+    <small id="availabilityDateHelp" class="form-text text-muted">Please enter in the format MM/DD/YYYY HH:MM AM/PM</small>
+  </div>
+  <div class="form-group">
+    <label for="duration">Duration (in minutes):</label>
+    <input required type="number" class="form-control" id="duration" aria-describedby="durationHelp"
+      placeholder="Enter a duration in minutes" [(ngModel)]="model.duration" name="duration">
+    <small id="durationHelp" class="form-text text-muted">Duration is the length of the interview in minutes.</small>
+  </div>
+  <button type="submit" class="btn btn-primary" [disabled]="newAvailability.invalid">Save</button>
+</form>

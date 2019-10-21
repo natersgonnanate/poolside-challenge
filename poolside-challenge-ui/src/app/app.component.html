@@ -1,0 +1,137 @@
+<div *ngIf="isModalShown()" [config]="{ show: true, ignoreBackdropClick: true }" (onHidden)="onHidden()" bsModal
+  #roleModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-auto-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-auto-name" class="modal-title pull-left">Welcome, choose your role to begin:</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <div class="card-header text-center">
+                <h3>Talent</h3>
+              </div>
+              <div class="card">
+                <div class="card-body card-padding">
+                  <app-talent-form (talentOutput)="startTalent($event)"></app-talent-form>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card">
+                <div class="card-header text-center">
+                  <h3>Restaurant</h3>
+                </div>
+                <div class="card-body card-padding">
+                  <form #startRestaurant="ngForm" (ngSubmit)="startRestaurantSubmit(startRestaurant.value)">
+                    <button type="submit" class="btn btn-primary">Start Restaurant!</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div [config]="{ }" bsModal #newAvailability="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dialog-auto-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-auto-name" class="modal-title pull-left">Add Availability</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <app-new-availability-form (availabilityCreated)="availabilityCreated($event)">
+              </app-new-availability-form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="margin-top: 50px;" *ngIf="isModeSet()">
+  <div class="row mb-5">
+    <div class="col-12">
+      <button class="submit" class="btn btn-info" (click)="changeRole()">Change Role</button>
+    </div>
+  </div>
+  <div class="row" *ngIf="showTalentInterviewTime()">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Your Interview Date</h5>
+          <hr />
+          <div>
+            <span>Date: </span><label>{{talentInterview.availability.availabilityDate | date:'short'}}</label>
+          </div>
+          <div>
+            <span>Interview Length: </span><label>{{talentInterview.availability.duration}} minutes</label>
+          </div>
+          <div class="mt-5" *ngIf="!isRescheduling()">
+            <button type="button" class="btn btn-default" (click)="cancelInterview(talentInterview)">Cancel Interview</button>
+            <button type="button" class="btn btn-primary ml-3" (click)="startReschedule()">Reschedule Interview</button>
+          </div>
+          <div class="mt-5" *ngIf="isRescheduling()">
+            <button type="button" class="btn btn-warning" (click)="cancelRescheduling()">Cancel Reschedule</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5" *ngIf="showSchedule()">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Interview Availability</h5>
+          <h6 class="card-subtitle mb-2 text-muted" *ngIf="isTalent()">Select an interview date & time from the options
+            below</h6>
+          <h6 class="card-subtitle mb-2 text-muted" *ngIf="isRestaurant()">View & Manage the available interview times
+            below</h6>
+          <h6 class="card-subtitle mb-2 text-muted" *ngIf="isRescheduling()">Select a new interview date & time from
+            below</h6>
+          <hr />
+          <div *ngIf="isRestaurant()">
+            <button type="submit" class="btn btn-warning" (click)="showNewAvailability()">Add Availability</button>
+          </div>
+          <hr />
+          <h6 *ngIf="schedule.length === 0">No availability currently scheduled</h6>
+          <div class="row">
+            <div *ngFor="let slot of schedule; let i = index" class="col-md-3">
+              <div class="card">
+                <div class="card-header">
+                  <label class="d-block">{{slot.availabilityDate | date:'short'}}</label>
+                  <label class="d-block">{{slot.duration}} minutes</label>
+                </div>
+                <div class="card-body">
+                  <div *ngIf="slot.appointment && isRestaurant()">
+                    <label class="d-block">{{slot.appointment.email}}</label>
+                    <label class="d-block">{{slot.appointment.phone}}</label>
+                  </div>
+                  <div *ngIf="slot.appointment && isTalent() && talentInterview && talentInterview.availability && talentInterview.availability.availabilityId !== slot.availabilityId">
+                    <div class="alert alert-danger">Unavailabile</div>
+                  </div>
+                  <div *ngIf="slot.appointment && isTalent() && talentInterview && talentInterview.availability && talentInterview.availability.availabilityId === slot.availabilityId">
+                    <div class="alert alert-warning">Your Current Selection</div>
+                  </div>
+                  <div *ngIf="!slot.appointment">
+                    <label *ngIf="isRestaurant()">Open</label>
+                    <button *ngIf="canBook(slot)" class="btn btn-success" type="button" (click)="reserveSlot(slot)">Reserve Slot</button>
+                    <button *ngIf="canReschedule(slot)" class="btn btn-success" type="button" (click)="rescheduleInterview(slot)">Reschedule With This Slot</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
