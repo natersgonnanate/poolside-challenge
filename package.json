@@ -70,6 +70,16 @@
       "jsx",
       "json",
       "node"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/poolside-challenge-ui",
+      "/dist"
+    ],
+    "modulePathIgnorePatterns": [
+      "/node_modules/",
+      "/poolside-challenge-ui",
+      "/dist"
     ]
   },
   "nodemonConfig": {
