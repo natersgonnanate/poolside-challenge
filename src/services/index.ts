@@ -1,3 +1,3 @@
-import scheduleRoutes from "./schedule/routes";
+import availabilityRoutes from "./availability/routes";
 
-export default [...scheduleRoutes];
+export default [...availabilityRoutes];

@@ -1,0 +1,74 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Poolside Challenge API",
+    "description": "API to manage interview schedule availability and interview appointments",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1",
+      "description": "Localhost development instance"
+    }
+  ],
+  "paths": {
+    "/availability/byrange": {
+      "get": {
+        "summary": "Returns configured availability for a given month.",
+        "tags": [
+          "Availability"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "startdate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "The beginning date and time of the availability range."
+          },
+          {
+            "in": "query",
+            "name": "enddate",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "The end date and time of the availability range."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of availability objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "availabilityDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The date and time of the start of the availability slot"
+                      },
+                      "duration": {
+                        "type": "number",
+                        "format": "int32",
+                        "description": "Duration of the availability slot in minutes."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A Bad Request response when either the startdate or enddate parameters are missing, or if the end date is not after the start date.."
+          }
+        }
+      }
+    }
+  }
+}
