@@ -44,7 +44,7 @@
     "swagger-ui-express": "^4.1.2",
     "tsc-watch": "^4.0.0",
     "typedi": "^0.8.0",
-    "typeorm": "^0.2.20",
+    "typeorm": "^0.2.25",
     "typeorm-typedi-extensions": "^0.2.3",
     "typescript": "^3.6.4"
   },
